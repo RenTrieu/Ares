@@ -70,6 +70,11 @@ impl Check for Checker<EnglishChecker> {
             {
                 trace!("Found word {} in English", word);
                 words_found += 1.0;
+                for char in word.chars() {
+                    if storage::INVISIBLE_CHARS.iter().any(|invis_chars| *invis_chars == char) {
+                        trace!("Found invisible char {} in word {}", char, word);
+                    }
+                }
             }
 
             trace!(

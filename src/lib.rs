@@ -116,6 +116,12 @@ fn check_if_input_text_is_plaintext(text: &str) -> CheckResult {
     athena_checker.check(text)
 }
 
+/// Checks if the given input contains invisible characters above a given
+/// threshold
+fn check_for_invisible_text(text: &str, invis_threshold: i32) -> bool {
+    false
+}
+
 /// DecoderResult is the result of decoders
 #[derive(Debug)]
 pub struct DecoderResult {
