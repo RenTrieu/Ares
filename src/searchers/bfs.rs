@@ -8,13 +8,20 @@ use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
 use crate::DecoderResult;
+use crate::config::OutputMethod;
 
 /// Breadth first search is our search algorithm
 /// https://en.wikipedia.org/wiki/Breadth-first_search
-pub fn bfs(input: String, result_sender: Sender<Option<DecoderResult>>, stop: Arc<AtomicBool>) {
+pub fn bfs(
+    input: String, 
+    result_sender: Sender<Option<DecoderResult>>, 
+    stop: Arc<AtomicBool>, 
+    output: OutputMethod
+) {
     let initial = DecoderResult {
         text: vec![input],
         path: vec![],
+        output_method: output.clone(),
     };
     let mut seen_strings = HashSet::new();
     // all strings to search through
@@ -42,6 +49,7 @@ pub fn bfs(input: String, result_sender: Sender<Option<DecoderResult>>, stop: Ar
                     let result_text = DecoderResult {
                         text,
                         path: decoders_used,
+                        output_method: output.clone(),
                     };
 
                     decoded_how_many_times(curr_depth);
@@ -76,6 +84,7 @@ pub fn bfs(input: String, result_sender: Sender<Option<DecoderResult>>, stop: Ar
                             // and just create more of them....
                             text,
                             path: decoders_used.to_vec(),
+                            output_method: output.clone(),
                         })
                     }));
                     Some(()) // indicate we want to continue processing
@@ -107,7 +116,7 @@ mod tests {
         // this will work after english checker can identify "CANARY: hello"
         let (tx, rx) = bounded::<Option<DecoderResult>>(1);
         let stopper = Arc::new(AtomicBool::new(false));
-        bfs("b2xsZWg=".into(), tx, stopper);
+        bfs("b2xsZWg=".into(), tx, stopper, OutputMethod::Stdout);
         let result = rx.recv().unwrap();
         assert!(result.is_some());
         let txt = result.unwrap().text;
@@ -128,7 +137,7 @@ mod tests {
         // Caesar Cipher (Rot13) -> Base64
         let (tx, rx) = bounded::<Option<DecoderResult>>(1);
         let stopper = Arc::new(AtomicBool::new(false));
-        bfs("MTkyLjE2OC4wLjE=".into(), tx, stopper);
+        bfs("MTkyLjE2OC4wLjE=".into(), tx, stopper, OutputMethod::Stdout);
         let result = rx.recv().unwrap();
         assert!(result.is_some());
         assert_eq!(result.unwrap().text[0], "192.168.0.1");

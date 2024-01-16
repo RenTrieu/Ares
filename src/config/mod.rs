@@ -13,6 +13,18 @@ use once_cell::sync::OnceCell;
 /// assert_eq!(config.verbose, 0);
 /// ```
 
+#[derive(Debug)]
+#[derive(Clone)]
+pub enum OutputMethod {
+    /// OutputMethod type specifying that the decoded plaintext will be 
+    /// outputted to standard output
+    Stdout,
+    /// OutputMethod type specifying that the decoded plaintext will be
+    /// outputted to the specified file path
+    File(String),
+}
+
+/// Struct for Ares configuration options
 pub struct Config {
     /// A level of verbosity to determine.
     /// How much we print in logs.
@@ -31,6 +43,8 @@ pub struct Config {
     pub api_mode: bool,
     /// Regex enables the user to search for a specific regex or crib
     pub regex: Option<String>,
+    /// How should Ares output the decoded plaintext?
+    pub output_method: OutputMethod,
 }
 
 /// Cell for storing global Config
@@ -66,6 +80,7 @@ impl Default for Config {
             timeout: 5,
             api_mode: true,
             regex: None,
+            output_method: OutputMethod::Stdout,
         }
     }
 }

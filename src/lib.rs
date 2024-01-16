@@ -42,7 +42,7 @@ use checkers::{
 };
 use log::debug;
 
-use crate::{config::Config, decoders::interface::Decoder};
+use crate::{config::Config, config::OutputMethod, decoders::interface::Decoder};
 
 use self::decoders::crack_results::CrackResult;
 /// The main function to call which performs the cracking.
@@ -80,6 +80,7 @@ use self::decoders::crack_results::CrackResult;
 /// assert!(result.is_none());
 /// ```
 pub fn perform_cracking(text: &str, config: Config) -> Option<DecoderResult> {
+    let output_method = config.output_method.clone();
     config::set_global_config(config);
     let text = text.to_string();
     let initial_check_for_plaintext = check_if_input_text_is_plaintext(&text);
@@ -96,6 +97,7 @@ pub fn perform_cracking(text: &str, config: Config) -> Option<DecoderResult> {
         let output = DecoderResult {
             text: vec![text],
             path: vec![crack_result],
+            output_method,
         };
 
         return Some(output);
@@ -106,7 +108,7 @@ pub fn perform_cracking(text: &str, config: Config) -> Option<DecoderResult> {
     // let search_tree = searchers::Tree::new(text.to_string());
     // Perform the search algorithm
     // It will either return a failure or success.
-    searchers::search_for_plaintext(text)
+    searchers::search_for_plaintext(text, output_method) // TODO handle updating DecoderResults in this method
 }
 
 /// Checks if the given input is plaintext or not
@@ -114,12 +116,6 @@ pub fn perform_cracking(text: &str, config: Config) -> Option<DecoderResult> {
 fn check_if_input_text_is_plaintext(text: &str) -> CheckResult {
     let athena_checker = Checker::<Athena>::new();
     athena_checker.check(text)
-}
-
-/// Checks if the given input contains invisible characters above a given
-/// threshold
-fn check_for_invisible_text(text: &str, invis_threshold: i32) -> bool {
-    false
 }
 
 /// DecoderResult is the result of decoders
@@ -132,6 +128,8 @@ pub struct DecoderResult {
     /// The CrackResult contains more than just each decoder, such as the keys used
     /// or the checkers used.
     pub path: Vec<CrackResult>,
+    /// The method by which the decoded output will be outputted
+    pub output_method: OutputMethod,
 }
 
 /// Creates a default DecoderResult with Default as the text / path
@@ -140,6 +138,7 @@ impl Default for DecoderResult {
         DecoderResult {
             text: vec!["Default".to_string()],
             path: vec![CrackResult::new(&Decoder::default(), "Default".to_string())],
+            output_method: OutputMethod::Stdout,
         }
     }
 }
@@ -151,6 +150,7 @@ impl DecoderResult {
         DecoderResult {
             text: vec![text.to_string()],
             path: vec![CrackResult::new(&Decoder::default(), "Default".to_string())],
+            output_method: OutputMethod::Stdout,
         }
     }
 }

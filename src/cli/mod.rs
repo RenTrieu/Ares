@@ -1,6 +1,6 @@
 use std::{fs::File, io::Read};
 
-use crate::{cli_pretty_printing::panic_failure_both_input_and_fail_provided, config::Config};
+use crate::{cli_pretty_printing::panic_failure_both_input_and_fail_provided, config::Config, config::OutputMethod};
 /// This doc string acts as a help message when the uses run '--help' in CLI mode
 /// as do all doc strings on fields
 use clap::Parser;
@@ -42,6 +42,9 @@ pub struct Opts {
     /// This turns off other checkers (English, LemmeKnow)
     #[arg(short, long)]
     regex: Option<String>,
+    /// Specifies the path in which the decoded plaintext should be stored
+    #[arg(short, long)]
+    output: Option<String>,
 }
 
 /// Parse CLI Arguments turns a Clap Opts struct, seen above
@@ -123,6 +126,11 @@ fn cli_args_into_config_struct(opts: Opts, text: String) -> (String, Config) {
             },
             api_mode: opts.api_mode.is_some(),
             regex: opts.regex,
+            output_method: if opts.output.is_none() {
+                OutputMethod::Stdout
+            } else {
+                OutputMethod::File(opts.output.unwrap())
+            },
         },
     )
 }
