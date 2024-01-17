@@ -1,6 +1,9 @@
 use std::{fs::File, io::Read};
 
-use crate::{cli_pretty_printing::panic_failure_both_input_and_fail_provided, config::Config, config::OutputMethod};
+use crate::{
+    cli_pretty_printing::panic_failure_both_input_and_fail_provided, config::Config,
+    config::OutputMethod,
+};
 /// This doc string acts as a help message when the uses run '--help' in CLI mode
 /// as do all doc strings on fields
 use clap::Parser;

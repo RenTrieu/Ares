@@ -36,15 +36,14 @@ pub fn program_exiting_successful_decoding(result: DecoderResult) {
                 ansi_term::Colour::Yellow.bold().paint(&plaintext[0]),
                 decoded_path_string
             );
-        },
+        }
         OutputMethod::File(file_path) => {
             println!(
                 "Outputting plaintext to file: {}\n\n{}",
-                file_path,
-                decoded_path_string
+                file_path, decoded_path_string
             );
             write(file_path, &plaintext[0]).expect("Error writing to file.");
-        },
+        }
     }
 }
 

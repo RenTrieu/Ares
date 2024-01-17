@@ -76,7 +76,10 @@ impl Check for Checker<EnglishChecker> {
                 trace!("Found word {} in English", word);
                 words_found += 1.0;
                 for char in word.chars() {
-                    if storage::INVISIBLE_CHARS.iter().any(|invis_chars| *invis_chars == char) {
+                    if storage::INVISIBLE_CHARS
+                        .iter()
+                        .any(|invis_chars| *invis_chars == char)
+                    {
                         trace!("Found invisible char {} in word {}", char, word);
                         invis_chars_found += 1.0;
                     }
@@ -134,11 +137,6 @@ mod tests {
         checker_type::{Check, Checker},
         english::EnglishChecker,
     };
-    // use log::{trace, debug, info};
-    //
-    // fn init() {
-    //     let _ = env_logger::builder().is_test(true).try_init();
-    // }
 
     #[test]
     fn test_check_basic() {
@@ -222,8 +220,6 @@ mod tests {
     #[test]
     fn test_check_extra_invis_characters() {
         let checker = Checker::<EnglishChecker>::new();
-        assert!(
-            checker.check("Hello Dear  ").is_identified
-        );
+        assert!(checker.check("Hello Dear  ").is_identified);
     }
 }

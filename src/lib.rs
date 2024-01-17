@@ -108,7 +108,7 @@ pub fn perform_cracking(text: &str, config: Config) -> Option<DecoderResult> {
     // let search_tree = searchers::Tree::new(text.to_string());
     // Perform the search algorithm
     // It will either return a failure or success.
-    searchers::search_for_plaintext(text, output_method) // TODO handle updating DecoderResults in this method
+    searchers::search_for_plaintext(text, output_method)
 }
 
 /// Checks if the given input is plaintext or not

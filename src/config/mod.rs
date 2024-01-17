@@ -13,10 +13,9 @@ use once_cell::sync::OnceCell;
 /// assert_eq!(config.verbose, 0);
 /// ```
 
-#[derive(Debug)]
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum OutputMethod {
-    /// OutputMethod type specifying that the decoded plaintext will be 
+    /// OutputMethod type specifying that the decoded plaintext will be
     /// outputted to standard output
     Stdout,
     /// OutputMethod type specifying that the decoded plaintext will be

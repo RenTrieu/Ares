@@ -7,16 +7,16 @@ use std::collections::HashSet;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
-use crate::DecoderResult;
 use crate::config::OutputMethod;
+use crate::DecoderResult;
 
 /// Breadth first search is our search algorithm
 /// https://en.wikipedia.org/wiki/Breadth-first_search
 pub fn bfs(
-    input: String, 
-    result_sender: Sender<Option<DecoderResult>>, 
-    stop: Arc<AtomicBool>, 
-    output: OutputMethod
+    input: String,
+    result_sender: Sender<Option<DecoderResult>>,
+    stop: Arc<AtomicBool>,
+    output: OutputMethod,
 ) {
     let initial = DecoderResult {
         text: vec![input],

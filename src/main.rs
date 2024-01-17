@@ -10,8 +10,6 @@ fn main() {
         // TODO: As result have array of CrackResult used,
         // we can print in better way with more info
         Some(result) => {
-            // TODO: Modify DecoderResult and pass in the output method
-            // to be dealt with in this method
             program_exiting_successful_decoding(result);
         }
         None => ares::cli_pretty_printing::failed_to_decode(),
