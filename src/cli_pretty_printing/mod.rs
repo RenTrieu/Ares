@@ -4,6 +4,7 @@
 /// We can also do things like check for logic or share information / functions which would be a bit messy in the main code.
 use crate::DecoderResult;
 use crate::OutputMethod;
+use std::fs::write;
 
 /// The output function is used to print the output of the program.
 /// If the API mode is on, it will not print.
@@ -37,7 +38,12 @@ pub fn program_exiting_successful_decoding(result: DecoderResult) {
             );
         },
         OutputMethod::File(file_path) => {
-            println!("Outputting plaintext to file: {}", file_path);
+            println!(
+                "Outputting plaintext to file: {}\n\n{}",
+                file_path,
+                decoded_path_string
+            );
+            write(file_path, &plaintext[0]).expect("Error writing to file.");
         },
     }
 }
