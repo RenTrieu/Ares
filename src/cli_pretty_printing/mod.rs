@@ -8,6 +8,11 @@ use std::fs::write;
 
 /// The output function is used to print the output of the program.
 /// If the API mode is on, it will not print.
+/// 
+/// # Panics
+///
+/// Panics if there is an error writing to file when output_method is set to a 
+/// file
 pub fn program_exiting_successful_decoding(result: DecoderResult) {
     let config = crate::config::get_config();
     if config.api_mode {

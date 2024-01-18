@@ -27,6 +27,7 @@ pub static DICTIONARIES: Lazy<HashMap<&str, HashSet<&str>>> = Lazy::new(|| {
 
 /// Loads invisible character list into a HashSet
 pub static INVISIBLE_CHARS: Lazy<HashSet<char>> = Lazy::new(|| {
+    /// The directory where the unicode of invisible characters are stored.
     static INVIS_CHARS_DIR: Dir<'_> =
         include_dir!("$CARGO_MANIFEST_DIR/src/storage/invisible_chars");
     let mut entries: HashSet<char> = HashSet::new();
@@ -37,7 +38,7 @@ pub static INVISIBLE_CHARS: Lazy<HashSet<char>> = Lazy::new(|| {
         );
         let content_lines = content.split('\n');
         for line in content_lines {
-            if line.len() <= 0 {
+            if line.is_empty() {
                 continue;
             }
             let unicode_line_split: Vec<&str> = line.split_ascii_whitespace().collect();
