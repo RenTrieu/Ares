@@ -35,11 +35,6 @@ impl Check for Checker<EnglishChecker> {
         const PLAINTEXT_DETECTION_PERCENTAGE: f64 = 0.4;
         let mut words_found: f64 = 0.0;
 
-        /// If 30% of the characters are invisible characters, then prompt the
-        /// user to save the resulting plaintext into a file
-        const INVIS_CHARS_DETECTION_PERCENTAGE: f64 = 0.3;
-        let mut invis_chars_found: f64 = 0.0;
-
         // TODO: Change this when the below bugs are fixed.
         let filename = "English text";
 
@@ -75,15 +70,6 @@ impl Check for Checker<EnglishChecker> {
             {
                 trace!("Found word {} in English", word);
                 words_found += 1.0;
-                for char in word.chars() {
-                    if storage::INVISIBLE_CHARS
-                        .iter()
-                        .any(|invis_chars| *invis_chars == char)
-                    {
-                        trace!("Found invisible char {} in word {}", char, word);
-                        invis_chars_found += 1.0;
-                    }
-                }
             }
 
             trace!(
@@ -103,14 +89,7 @@ impl Check for Checker<EnglishChecker> {
                 break;
             }
         }
-        // If the percentage of invisible characters in the plaintext exceeds
-        // the detection percentage, prompt the user asking if they want to
-        // save the plaintext into a file
-        trace!("invis_chars_found: {}", invis_chars_found);
-        trace!("result.text.len(): {}", result.text.len());
-        if invis_chars_found / result.text.len() as f64 > INVIS_CHARS_DETECTION_PERCENTAGE {
-            debug!("Number of invisible characters exceeds detection percentage");
-        }
+
         result
     }
 }
@@ -215,11 +194,18 @@ mod tests {
         assert!(!checker.check("#").is_identified);
     }
 
-    //
-    // Looks like this test will fail because any punctuation will not clear the english checker
+    // This check will fail because the extra spaces will increase the
+    // input split count, decreasing the PLAINTEXT_DETECTION_PERCENTAGE
+    // for the same number of words
     #[test]
-    fn test_check_extra_invis_characters() {
+    fn test_check_two_words_three_spaces() {
         let checker = Checker::<EnglishChecker>::new();
-        assert!(checker.check("Hello Dear  ").is_identified);
+        assert!(!checker.check("Hello Dear   ").is_identified);
+    }
+
+    #[test]
+    fn test_check_invis_char() {
+        let checker = Checker::<EnglishChecker>::new();
+        assert!(checker.check("Hello Dear        ").is_identified);
     }
 }
