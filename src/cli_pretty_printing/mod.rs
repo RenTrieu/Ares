@@ -49,7 +49,6 @@ pub fn program_exiting_successful_decoding(result: DecoderResult) {
             );
             write(file_path, &plaintext[0]).expect("Error writing to file.");
         }
-
     }
 }
 
