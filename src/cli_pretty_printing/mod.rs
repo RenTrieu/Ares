@@ -3,9 +3,16 @@
 /// would look a bit ugly and not the same UI as others.
 /// We can also do things like check for logic or share information / functions which would be a bit messy in the main code.
 use crate::DecoderResult;
+use crate::OutputMethod;
+use std::fs::write;
 
 /// The output function is used to print the output of the program.
 /// If the API mode is on, it will not print.
+///
+/// # Panics
+///
+/// Panics if there is an error writing to file when output_method is set to a
+/// file
 pub fn program_exiting_successful_decoding(result: DecoderResult) {
     let config = crate::config::get_config();
     if config.api_mode {
@@ -27,11 +34,23 @@ pub fn program_exiting_successful_decoding(result: DecoderResult) {
     } else {
         format!("the decoders used are {decoded_path_coloured}")
     };
-    println!(
-        "The plaintext is: \n{}\nand {}",
-        ansi_term::Colour::Yellow.bold().paint(&plaintext[0]),
-        decoded_path_string
-    );
+    match result.output_method {
+        OutputMethod::Stdout => {
+            println!(
+                "The plaintext is: \n{}\nand {}",
+                ansi_term::Colour::Yellow.bold().paint(&plaintext[0]),
+                decoded_path_string
+            );
+        }
+        OutputMethod::File(file_path) => {
+            println!(
+                "Outputting plaintext to file: {}\n\n{}",
+                file_path, decoded_path_string
+            );
+            write(file_path, &plaintext[0]).expect("Error writing to file.");
+        }
+
+    }
 }
 
 /// The output function is used to print the output of the program.

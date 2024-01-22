@@ -13,7 +13,7 @@ use log::debug;
 use crate::checkers::athena::Athena;
 use crate::checkers::checker_type::{Check, Checker};
 use crate::checkers::CheckerTypes;
-use crate::config::get_config;
+use crate::config::{get_config, OutputMethod};
 use crate::filtration_system::{filter_and_get_decoders, MyResults};
 use crate::{timer, DecoderResult};
 /// This module provides access to the breadth first search
@@ -36,7 +36,7 @@ mod bfs;
 /// We can return an Option? An Enum? And then match on that
 /// So if we return CrackSuccess we return
 /// Else if we return an array, we add it to the children and go again.
-pub fn search_for_plaintext(input: String) -> Option<DecoderResult> {
+pub fn search_for_plaintext(input: String, output_method: OutputMethod) -> Option<DecoderResult> {
     let timeout = get_config().timeout;
     let timer = timer::start(timeout);
 
@@ -45,7 +45,7 @@ pub fn search_for_plaintext(input: String) -> Option<DecoderResult> {
     let stop = Arc::new(AtomicBool::new(false));
     let s = stop.clone();
     // Change this to select which search algorithm we want to use.
-    let handle = thread::spawn(move || bfs::bfs(input, result_sender, s));
+    let handle = thread::spawn(move || bfs::bfs(input, result_sender, s, output_method));
 
     loop {
         if let Ok(res) = result_recv.try_recv() {
