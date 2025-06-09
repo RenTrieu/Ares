@@ -175,11 +175,12 @@ pub fn generate_heuristic(
         // Use the decoder's popularity via the get_popularity method (higher popularity = lower score)
         base_score += 1.0 - decoder.get_popularity();
     } else {
+        return base_score;
         // if there is no next decoder, we should panic
         // as this is meant to be set by us
         // by panicing we freak out the developer into fixing this
-        setup_panic!();
-        panic!("No next decoder provided to generate_heuristic, cannot calculate heuristic based on popularity");
+        // setup_panic!();
+        // panic!("No next decoder provided to generate_heuristic, cannot calculate heuristic based on popularity");
     }
 
     // 2. Depth penalty - exponential growth but not too aggressive

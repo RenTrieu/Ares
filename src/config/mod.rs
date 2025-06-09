@@ -222,6 +222,7 @@ fn parse_toml_with_unknown_keys(contents: &str) -> Config {
             "wordlist_path",
             "question",
             "colourscheme",
+            "max_depth",
         ];
         for key in table.keys() {
             if !known_keys.contains(&key.as_str()) {

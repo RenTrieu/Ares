@@ -66,7 +66,7 @@ const PRUNE_THRESHOLD: usize = 100000;
 const INITIAL_PRUNE_THRESHOLD: usize = PRUNE_THRESHOLD;
 
 /// Maximum depth for search (used for dynamic threshold adjustment)
-const MAX_DEPTH: u32 = 100;
+const DYN_MAX_DEPTH: u32 = 100;
 
 /// Number of nodes to process in parallel
 const PARALLEL_BATCH_SIZE: usize = 10;
@@ -670,7 +670,7 @@ pub fn astar(input: String, result_sender: Sender<Option<DecoderResult>>, stop: 
                 seen_strings.clear();
 
                 // Adjust threshold based on search progress
-                let progress_factor = new_depth as f32 / MAX_DEPTH as f32;
+                let progress_factor = new_depth as f32 / DYN_MAX_DEPTH as f32;
                 let new_threshold = INITIAL_PRUNE_THRESHOLD - (progress_factor * 5000.0) as usize;
                 prune_threshold.store(new_threshold, AtomicOrdering::Relaxed);
 
