@@ -39,6 +39,11 @@ impl Crack for Decoder<BrailleDecoder> {
             return results; // unencrypted_text is already None by default
         }
 
+        // check if the decoder transformed the input
+        if decoded_text == text {
+            return results; // unencrypted text is already None by default
+        }
+
         let checker_result = checker.check(&decoded_text);
         if checker_result.is_identified {
             trace!("Found a match with braille");
@@ -57,6 +62,16 @@ impl Crack for Decoder<BrailleDecoder> {
 
     fn get_name(&self) -> &str {
         self.name
+    }
+
+    /// Gets the description for the current decoder
+    fn get_description(&self) -> &str {
+        self.description
+    }
+
+    /// Gets the link for the current decoder
+    fn get_link(&self) -> &str {
+        self.link
     }
 }
 
@@ -151,7 +166,6 @@ mod tests {
         let result = braille_decoder
             .crack("123ABC", &get_athena_checker())
             .unencrypted_text;
-        // With the new behavior, the decoder should return None for non-Braille input
         assert!(result.is_none());
     }
 
