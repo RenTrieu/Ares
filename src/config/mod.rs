@@ -69,6 +69,8 @@ pub struct Config {
     pub enhanced_detection: bool,
     /// Path to the enhanced detection model. If None, will use the default path.
     pub model_path: Option<String>,
+    /// Maximum depth for search
+    pub max_depth: usize,
 }
 
 /// Cell for storing global Config
@@ -132,6 +134,7 @@ impl Default for Config {
             enhanced_detection: false,
             model_path: None,
             colourscheme: HashMap::new(),
+            max_depth: 10,
         };
 
         // Set default colors
