@@ -171,7 +171,7 @@ struct ThreadSafePriorityQueue {
     queue: Mutex<BinaryHeap<Arc<AStarNode>>>,
 }
 
-impl<'a> ThreadSafePriorityQueue {
+impl ThreadSafePriorityQueue {
     fn new() -> Self {
         ThreadSafePriorityQueue {
             queue: Mutex::new(BinaryHeap::new()),
@@ -601,17 +601,9 @@ pub fn astar(input: String, result_sender: Sender<Option<DecoderResult>>, stop: 
 
     // Main A* loop - no longer checking stop signal in loop condition
     while !open_set.is_empty() {
-        // let mut cur_node;
-        // match open_set.pop() {
-        //     Some(node) => {
-        //         cur_node = Arc::get_mut(&mut node).expect("Could not get mutable Arc to cur_node");
-        //     }
-        //     None => {
-        //         break;
-        //     }
-        // }
-
-        let mut cur_node = open_set.pop().unwrap();
+        let mut cur_node = open_set
+            .pop()
+            .expect("Could not get top node from open set");
         let cur_node = Arc::get_mut(&mut cur_node)
             .expect("Could not get mutable Arc to cur_node");
 
@@ -637,9 +629,7 @@ pub fn astar(input: String, result_sender: Sender<Option<DecoderResult>>, stop: 
                 );
                 cur_node.result = Some(result.clone());
                 if let Some(decoded_text) = &result.unencrypted_text {
-                    for s in decoded_text {
-                        cur_node.state.text.push(s.clone());
-                    }
+                    cur_node.state.text = decoded_text.clone();
                 }
                 cur_node.state.path.push(result.clone());
             },
@@ -658,7 +648,6 @@ pub fn astar(input: String, result_sender: Sender<Option<DecoderResult>>, stop: 
                     neighbor_nodes = Vec::new();
                 }
 
-                // open_set.pop();
                 for node in neighbor_nodes {
                     open_set.push(Arc::new(node));
                 }
@@ -705,8 +694,6 @@ pub fn astar(input: String, result_sender: Sender<Option<DecoderResult>>, stop: 
         }
 
         // Non-success case 
-        // open_set.pop();
-        //
         let neighbor_nodes;
         if cur_node.cur_depth + 1 < config.max_depth {
             neighbor_nodes = expand_node(
