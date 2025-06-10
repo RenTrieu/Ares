@@ -33,6 +33,14 @@ fn test_no_panic_if_empty_string() {
 }
 
 #[test]
+fn test_hello_world_base_64_check_result() {
+    let config = Config::default();
+    let res = perform_cracking("aGVsbG8gd29ybGQK", config);
+    let decoder_result = res.expect("Could not extract decoder result");
+    assert_eq!(decoder_result.text.first().expect("Could not extract decoder result text"), "hello world");
+}
+
+#[test]
 fn test_hello_world_base_64_nested_3_check_result() {
     let config = Config::default();
     let res = perform_cracking("WVVkV2MySkhPR2RrTWpsNVlrZFJTd289Cg==", config);

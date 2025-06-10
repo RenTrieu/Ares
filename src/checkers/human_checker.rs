@@ -6,7 +6,6 @@ use crate::{cli_pretty_printing, timer};
 use dashmap::DashSet;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::OnceLock;
-use std::sync::atomic::{AtomicBool, Ordering};
 use text_io::read;
 
 // Static atomic boolean to track if a human has confirmed a result
@@ -15,7 +14,6 @@ static HUMAN_CONFIRMED: AtomicBool = AtomicBool::new(false);
 static SEEN_PROMPTS: OnceLock<DashSet<String>> = OnceLock::new();
 // if human checker is called, we set this to true
 // so we dont call it again
-static HUMAN_CONFIRMED: AtomicBool = AtomicBool::new(false);
 
 fn get_seen_prompts() -> &'static DashSet<String> {
     SEEN_PROMPTS.get_or_init(DashSet::new)
